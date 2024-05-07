@@ -1,24 +1,28 @@
-function exist(board, word) {
-  const rows = board.length;
-  const cols = board[0].length;
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      if (dfs(board, i, j, word, 0)) return true;
+function largestDivisibleSubset(nums) {
+  nums.sort((a, b) => a - b);
+  const dp = new Array(nums.length).fill(1);
+  let maxSubsetSize = 1;
+  let maxSubsetIdx = 0;
+  for (let i = 1; i < nums.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] % nums[j] === 0) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        if (dp[i] > maxSubsetSize) {
+          maxSubsetSize = dp[i];
+          maxSubsetIdx = i;
+        }
+      }
     }
   }
-  return false;
-  function dfs(board, i, j, word, index) {
-    if (index === word.length) return true;
-    if (i < 0 || i >= rows || j < 0 || j >= cols || board[i][j] !== word[index])
-      return false;
-    const temp = board[i][j];
-    board[i][j] = "#";
-    const found =
-      dfs(board, i + 1, j, word, index + 1) ||
-      dfs(board, i - 1, j, word, index + 1) ||
-      dfs(board, i, j + 1, word, index + 1) ||
-      dfs(board, i, j - 1, word, index + 1);
-    board[i][j] = temp;
-    return found;
+  const result = [];
+  let prev = nums[maxSubsetIdx];
+  let count = maxSubsetSize;
+  for (let i = maxSubsetIdx; i >= 0; i--) {
+    if (prev % nums[i] === 0 && dp[i] === count) {
+      result.unshift(nums[i]);
+      prev = nums[i];
+      count--;
+    }
   }
+  return result;
 }
