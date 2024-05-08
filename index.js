@@ -1,28 +1,24 @@
-function largestDivisibleSubset(nums) {
-  nums.sort((a, b) => a - b);
-  const dp = new Array(nums.length).fill(1);
-  let maxSubsetSize = 1;
-  let maxSubsetIdx = 0;
-  for (let i = 1; i < nums.length; i++) {
-    for (let j = 0; j < i; j++) {
-      if (nums[i] % nums[j] === 0) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-        if (dp[i] > maxSubsetSize) {
-          maxSubsetSize = dp[i];
-          maxSubsetIdx = i;
-        }
-      }
+const mergeSort = (arr) => {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  return merge(left, right);
+};
+const merge = (left, right) => {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
-  const result = [];
-  let prev = nums[maxSubsetIdx];
-  let count = maxSubsetSize;
-  for (let i = maxSubsetIdx; i >= 0; i--) {
-    if (prev % nums[i] === 0 && dp[i] === count) {
-      result.unshift(nums[i]);
-      prev = nums[i];
-      count--;
-    }
-  }
-  return result;
-}
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+};
