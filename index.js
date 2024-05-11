@@ -1,24 +1,17 @@
-function canFinish(numCourses, prerequisites) {
-  const graph = new Map();
-  const visited = new Array(numCourses).fill(0);
-  for (const [course, prerequisite] of prerequisites) {
-    if (!graph.has(course)) graph.set(course, []);
-    graph.get(course).push(prerequisite);
-  }
-  for (let i = 0; i < numCourses; i++) {
-    if (!dfs(i)) return false;
-  }
-  return true;
-  function dfs(course) {
-    if (visited[course] === 1) return false;
-    if (visited[course] === -1) return true;
-    visited[course] = 1;
-    if (graph.has(course)) {
-      for (const prerequisite of graph.get(course)) {
-        if (!dfs(prerequisite)) return false;
-      }
+function pathSum(root, sum) {
+  if (!root) return [];
+  const result = [];
+  const path = [];
+  const traverse = (node, sum) => {
+    if (!node) return;
+    path.push(node.val);
+    if (!node.left && !node.right && sum === node.val) {
+      result.push([...path]);
     }
-    visited[course] = -1;
-    return true;
-  }
+    traverse(node.left, sum - node.val);
+    traverse(node.right, sum - node.val);
+    path.pop();
+  };
+  traverse(root, sum);
+  return result;
 }
