@@ -1,17 +1,15 @@
-function pathSum(root, sum) {
-  if (!root) return [];
-  const result = [];
-  const path = [];
-  const traverse = (node, sum) => {
-    if (!node) return;
-    path.push(node.val);
-    if (!node.left && !node.right && sum === node.val) {
-      result.push([...path]);
+function longestValidParentheses(s) {
+  if (s.length === 0) return 0;
+  let max = 0;
+  const dp = new Array(s.length).fill(0);
+  for (let i = 1; i < s.length; i++) {
+    if (s[i] === ")") {
+      if (s[i - 1] === "(") dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+      else if (i - dp[i - 1] > 0 && s[i - dp[i - 1] - 1] === "(")
+        dp[i] =
+          dp[i - 1] + (i - dp[i - 1] >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+      max = Math.max(max, dp[i]);
     }
-    traverse(node.left, sum - node.val);
-    traverse(node.right, sum - node.val);
-    path.pop();
-  };
-  traverse(root, sum);
-  return result;
+  }
+  return max;
 }
