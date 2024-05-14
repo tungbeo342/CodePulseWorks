@@ -1,16 +1,21 @@
-function search(nums, target) {
-  let left = 0;
-  let right = nums.length - 1;
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    if (nums[mid] === target) return mid;
-    if (nums[left] <= nums[mid]) {
-      if (nums[left] <= target && target < nums[mid]) right = mid - 1;
-      else left = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[right]) left = mid + 1;
-      else right = mid - 1;
+function getPermutation(n, k) {
+  const nums = Array.from({ length: n }, (_, i) => i + 1);
+  let result = "";
+  let count = 0;
+  const backtrack = (current) => {
+    if (current.length === n) {
+      count++;
+      if (count === k) result = current.join("");
+      return;
     }
-  }
-  return -1;
+    if (count >= k) return;
+    for (const num of nums) {
+      if (current.includes(num)) continue;
+      current.push(num);
+      backtrack(current);
+      current.pop();
+    }
+  };
+  backtrack([]);
+  return result;
 }
